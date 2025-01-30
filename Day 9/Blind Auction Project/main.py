@@ -28,8 +28,27 @@ def bidding():
 
 bidding()
 
-print(names_dict["Tom"])
+highest_bid = 0
+highest_bidder = ""
 
+for i in names_dict:
+    bid_amount = names_dict[i]
+
+    if bid_amount > highest_bid:
+        highest_bid = bid_amount
+        highest_bidder = i
+
+print(highest_bidder)
+print(highest_bid)
+
+
+
+
+# print(names_dict["Tom"])
+
+#For each Kay:Value pair in the "names_dict" dictionary, find the highest Value
+#and store the associated Key as "high_bidder"
+#
 # high_bidder = max(names_dict, key=names_dict.get)
 # high_bid = max(names_dict.values())
 # print("The highest bid is from", high_bidder, "with a bid of", high_bid)
