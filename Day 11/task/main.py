@@ -1,3 +1,5 @@
+from collections.abc import dict_values
+
 import art
 import time
 import random
@@ -21,6 +23,7 @@ card_dict = {
 print(art.logo)
 print("Welcome to Blackjack!")
 
+print(list(card_dict.keys()))
 
 def blackjack():
 
@@ -30,11 +33,11 @@ def blackjack():
         n1 = (card_dict[chosen_card])
         return n1
 
-    card_1 = int(choose_random_card())
+    card_1 = (choose_random_card())
     print(f"You drew a {card_1}")
     time.sleep(2)
 
-    card_2 = int(choose_random_card())
+    card_2 = (choose_random_card())
     print(f"You drew a {card_2}")
     time.sleep(2)
 
@@ -45,5 +48,11 @@ def blackjack():
 
     while keep_going == "y":
 
-blackjack()
+        new_card = choose_random_card()
+        print(f"You drew a {new_card}")
+        score += new_card
+        print(f"Current score: {score}")
+        keep_going = input("Would you like to draw again? Y/N").lower()
+# blackjack()
+
 
