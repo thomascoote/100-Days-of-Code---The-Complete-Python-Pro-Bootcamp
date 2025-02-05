@@ -5,7 +5,7 @@ import time
 import random
 
 card_dict = {
-    "Ace" : 1,
+    "Ace" : 11,
     "2" : 2,
     "3" : 3,
     "4" : 4,
@@ -25,36 +25,51 @@ print("Welcome to Blackjack!")
 
 # print(card_dict[random.choice(list(card_dict.keys()))])
 
-def blackjack():
+your_cards = []
+cpu_cards = []
+your_aces_held = []
+cpu_aces_held = []
 
-    your_cards = []
+def choose_random_card(who):
+    chosen_card = random.choice(list(card_dict.keys()))
+    print(f"{who} drew {chosen_card}")
+    time.sleep(1)
+    return chosen_card
 
-    def choose_random_card():
-        chosen_card = random.choice(list(card_dict.keys()))
-        print(f"You drew {chosen_card}")
-        your_cards.append(chosen_card)
-        time.sleep(1)
-        score = 0
+def draw_player():
+    your_cards.append(choose_random_card("You"))
+
+def draw_cpu():
+    cpu_cards.append(choose_random_card("CPU"))
+
+def current_score(n1):
+    if n1 == "player":
+        your_score = 0
         for i in your_cards:
-            score += (card_dict[i])
-            if score > 21:
+            your_score += card_dict[i]
+        return your_score
+    else:
+        cpu_score = 0
+        for i in cpu_cards:
+            cpu_score += card_dict[i]
+        return cpu_score
 
+# Draw the initial two cards for the player and the CPU
 
-        print(f"Current score:{score}")
+draw_player()
+draw_player()
+print(f"Your score: {current_score("player")}")
 
-    choose_random_card()
-    time.sleep(2)
+draw_cpu()
+draw_cpu()
+print(f"CPU score:{current_score("cpu")}\n")
 
-    choose_random_card()
-    time.sleep(2)
+draw_again = input("Would you like to draw another card? Y/N\n").lower()
+while draw_again == "y":
+    draw_player()
 
-    keep_going = input("Would you like to draw again? Y/N").lower()
+    print(current_score("player"))
+    draw_again = input("Would you like to draw another card? Y/N\n").lower()
 
-    while keep_going == "y":
-
-        choose_random_card()
-        keep_going = input("Would you like to draw again? Y/N").lower()
-
-    print(your_cards)
-blackjack()
-
+print(f"Your cards:{your_cards}")
+print(f"Your cards:{cpu_cards}")
