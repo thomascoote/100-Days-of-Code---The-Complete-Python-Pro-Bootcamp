@@ -19,73 +19,54 @@ card_dict = {
     "Queen": 10,
     "King" : 10,
 }
-
 print(art.logo)
 print("Welcome to Blackjack!")
 
-# print(card_dict[random.choice(list(card_dict.keys()))])
-
 your_cards = []
 cpu_cards = []
-your_aces_held = 0
-cpu_aces_held = 0
-
-def choose_random_card(who):
-    player_aces = 0
-    cpu_aces = 0
-    chosen_card = random.choice(list(card_dict.keys()))
-    print(f"{who} drew {chosen_card}")
-    if chosen_card == "Ace" and who == "player":
-        player_aces += 1
-    if chosen_card == "Ace" and who == "CPU":
-        cpu_aces += 1
-    time.sleep(1)
-    return chosen_card, player_aces, cpu_aces
-
-def draw_player():
-    your_cards.append(choose_random_card("player")[0])
-    player_aces = choose_random_card("player")[1]
-
-def draw_cpu():
-    cpu_cards.append(choose_random_card("CPU")[0])
-    cpu_aces = choose_random_card("CPU")[1]
-def current_score(n1):
-    if n1 == "player":
-        your_score = 0
-        for i in your_cards:
-            your_score += card_dict[i]
-        if your_aces_held > 0 and your_score > 21:
-            your_score -= 10
-        return your_score
-    else:
-        cpu_score = 0
-        for i in cpu_cards:
-            cpu_score += card_dict[i]
-        if cpu_aces_held > 0 and cpu_score > 21:
-            cpu_score -= 10
-
-        return cpu_score
+your_score = 0
+cpu_score = 0
 
 # Draw the initial two cards for the player and the CPU
 
-draw_player()
-draw_player()
-print(f"Your score: {current_score("player")}")
+def draw(who):
+    choice = random.choice(list(card_dict.keys()))
+    print(f"{who} drew a {choice}")
+    return choice
 
-draw_cpu()
-draw_cpu()
-print(f"CPU score:{current_score("cpu")}\n")
+def update_scores(cards1, cards2):
+    score1 = 0
+    score2 = 0
+    for i in cards1:
+        score1 += card_dict[i]
+    for i in cards2:
+        score2 += card_dict[i]
+    return score1, score2
 
-draw_again = input("Would you like to draw another card? Y/N\n").lower()
-while draw_again == "y":
-    draw_player()
 
-    print(current_score("player"))
-    if current_score("player") > 21:
-        print("Bust!")
-        exit()
+your_cards.append(draw("You"))
+print(your_cards)
 
-    draw_again = input("Would you like to draw another card? Y/N\n").lower()
+your_cards.append(draw("You"))
+print(your_cards)
 
-print(f"Your cards:{your_cards}")
-print(f"CPU cards:{cpu_cards}")
+cpu_cards.append(draw("cpu"))
+print(cpu_cards)
+
+cpu_cards.append(draw("cpu"))
+print(cpu_cards)
+
+print(f"Your score = {update_scores(your_cards,cpu_cards)[0]}\n CPU score = {update_scores(your_cards,cpu_cards)[1]}")
+
+player_draw_again = "y"
+cpu_draw_again = "y"
+
+player_draw_again = input("Would you like to draw another card? y/n\n").lower()
+
+print(player_draw_again)
+
+while player_draw_again == "y":
+    your_cards.append(draw("You"))
+    print(your_cards)
+    update_scores(your_cards, cpu_cards)
+    player_draw_again = input("Would you like to draw another card? y/n\n").lower()
