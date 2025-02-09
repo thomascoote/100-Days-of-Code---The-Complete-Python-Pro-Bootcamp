@@ -23,86 +23,41 @@ print("Welcome to Blackjack!")
 
 your_cards = []
 cpu_cards = []
-your_score = 0
-cpu_score = 0
 your_aces = 0
 cpu_aces = 0
 # Draw the initial two cards for the player and the CPU
 
-def draw(who):
-    choice = random.choice(list(card_dict.keys()))
-    print(f"{who} drew a {choice}")
-    return choice
-
-def update_scores(cards1, cards2):
-    score1 = 0
-    score2 = 0
-    for i in cards1:
-        score1 += card_dict[i]
-    for i in cards2:
-        score2 += card_dict[i]
-    return score1, score2
-
-
-your_cards.append(draw("You"))
-print(your_cards)
-
-your_cards.append(draw("You"))
-print(your_cards)
-
-cpu_cards.append(draw("cpu"))
-print(cpu_cards)
-
-cpu_cards.append(draw("cpu"))
-print(cpu_cards)
-
-print(f"Your score = {update_scores(your_cards,cpu_cards)[0]}\n CPU score = {update_scores(your_cards,cpu_cards)[1]}")
-
-player_draw_again = "y"
-cpu_draw_again = "y"
-
-player_draw_again = input("Would you like to draw another card? y/n\n").lower()
-
-while player_draw_again == "y":
-    your_aces = 0
-    your_cards.append(draw("You"))
-    print(your_cards)
-    update_scores(your_cards, cpu_cards)
-    your_score = update_scores(your_cards,cpu_cards)[0]
+def initial_draw():
+    your_score = 0
+    cpu_score = 0
+    #Your Cards
+    your_cards.append(random.choice(list(card_dict.keys())))
+    your_cards.append(random.choice(list(card_dict.keys())))
     for i in your_cards:
-        if i == "Ace":
-            your_aces += 1
+        your_score += card_dict[i]
+    print("Your Hand")
+    print(your_cards)
+    print("Your Score")
+    print(your_score)
 
-    if your_score > 21:
-        if your_aces == 1:
-            your_score -= 10
-            if your_score > 21:
-                if your_aces == 2:
-                    your_score -= 10
-
-    if your_score > 21:
-        print(f"Your score = {your_score} \nBUST")
-        exit()
-
-    print(f"Your score = {your_score}\n")
-
-    cpu_score = update_scores(your_cards, cpu_cards)[1]
+    cpu_cards.append(random.choice(list(card_dict.keys())))
+    print("CPU Hand")
+    print(cpu_cards, "*")
+    cpu_cards.append(random.choice(list(card_dict.keys())))
     for i in cpu_cards:
-        if i == "Ace":
-            cpu_aces += 1
+        cpu_score += card_dict[i]
 
-    if cpu_score > 21:
-        if cpu_aces == 1:
-            cpu_score -= 10
-            if cpu_score > 21:
-                if cpu_aces == 2:
-                    cpu_score -= 10
+initial_draw()
 
-    if cpu_score < 17:
-        cpu_cards.append(draw("cpu"))
-        cpu_score = update_scores(your_cards, cpu_cards)[1]
-    print(cpu_cards)
-    print(f"CPU score = {cpu_score}")
-
-    player_draw_again = input("Would you like to draw another card? y/n\n").lower()
-
+draw_again = input("Would you like to draw another card? y/n?").lower()
+while draw_again == "y":
+    your_score = 0
+    cpu_score = 0
+    your_cards.append(random.choice(list(card_dict.keys())))
+    for i in your_cards:
+        your_score += card_dict[i]
+    print("Your Hand")
+    print(your_cards)
+    print("Your Score")
+    print(your_score)
+    draw_again = input("Would you like to draw again? y/n").lower()
