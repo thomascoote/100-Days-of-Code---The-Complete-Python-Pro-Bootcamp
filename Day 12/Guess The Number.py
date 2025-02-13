@@ -1,4 +1,4 @@
-from pickle import GLOBAL
+from pickle import GLOBAL, FALSE
 from random import randint
 
 import art
@@ -30,16 +30,37 @@ def difficulty_set():
             print("Please choose a valid difficulty")
 
 def check_guess(player_guess):
+    # Call global variable GUESSES_LEFT
+    global GUESSES_LEFT
+
+    if int(player_guess) > NUMBER_TO_GUESS:
+        print("Too high")
+        GUESSES_LEFT -= 1
+        return 0
+
+    if int(player_guess) < NUMBER_TO_GUESS:
+        print("Too low")
+        GUESSES_LEFT -= 1
+        return 0
+
+    if int(player_guess) == NUMBER_TO_GUESS:
+        print("Correct!")
+        return 1
 
 
 # Sets the number of lives based on difficulty selection
 GUESSES_LEFT = (difficulty_set())
 print(f"You have {GUESSES_LEFT} lives remaining")
 
-# TODO Choose a number between 1 and 100 and store it in a variable
-# Define a function that takes a users input guess and compares it against the stored number.
+# TODO Define a function that takes a users input guess and compares it against the stored number.
 #   If it's too high, tell the user "Too high" and let them guess again while removing 1 life
 #   Same for too low
 #   If they guess right, tell them "You guessed correctly!" and end the game
 
-check_guess(input("Please enter your guess"))
+
+correct_answer = 0
+
+while correct_answer == 0:
+    correct_answer = check_guess(input("Please enter your guess\n"))
+
+exit()
