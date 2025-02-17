@@ -1,8 +1,10 @@
+from random import random, randint
 from tabnanny import check
 
 import game_data
 import art
 
+game_data_list = game_data.data
 #         'name':
 #         'follower_count':
 #         'description':
@@ -12,55 +14,82 @@ import art
 # Welcome Logo
 print(art.logo)
 
-# The input for this function is the index of the FIRST dictionary you want to grab the data from
-def compare_a(dict_number):
-    temp_dict_a = game_data.data[dict_number]
-    print(f"Compare A: {temp_dict_a["name"]}, a {temp_dict_a["description"]}, from {temp_dict_a["country"]}")
-
-# The input for this function is the index of the SECOND dictionary you want to grab the data from
-def compare_b(dict_number):
-    temp_dict_b = game_data.data[dict_number]
-    print(f"Against B: {temp_dict_b["name"]}, a {temp_dict_b["description"]}, from {temp_dict_b["country"]}")
-
-def check_answer(value_1, value_2, users_answer):
-    a_dict = game_data.data[value_1]
-    b_dict = game_data.data[value_2]
-    a = game_data.data[value_1]["follower_count"]
-    b = game_data.data[value_2]["follower_count"]
-    if a > b:
-        highest_followers = "a"
-        highest_dict = a_dict
-        lowest_dict = b_dict
-    else:
-        highest_followers = "b"
-        highest_dict = b_dict
-        lowest_dict = a_dict
-
-    if users_answer == highest_followers:
-        print(f"Correct! {highest_dict["name"]} has {highest_dict["follower_count"]} million followers, {lowest_dict["name"]} only has {lowest_dict["follower_count"]} million followers\n")
-        return True
-    else:
-        print(f"Wrong! {highest_dict["name"]} has {highest_dict["follower_count"]} million followers, {lowest_dict["name"]} only has {lowest_dict["follower_count"]} million followers\n")
-        return False
-
-correct_guess = True
-dict_increment = 0
 score = 0
 
-while correct_guess == True:
+#Returns a dictionary value from the dictionary list, then removes that entry from the list
+def pick_someone():
+    game_data_items_count = len(game_data_list) -1
+    random_list_index = randint(0, game_data_items_count)
+    pick_someone_choice = (game_data_list[random_list_index])
+    game_data_list.remove(game_data_list[random_list_index])
+    return pick_someone_choice
 
-    # Track and print current score
-    print(f"Your current score is {score}")
 
-    compare_a(dict_increment)
+def highest_followers(first, second):
+    if first["follower_count"] > second["follower_count"]:
+        return first
+    else:
+        return second
+
+
+#Initial picking
+
+choice_a = pick_someone()
+choice_b = pick_someone()
+
+#Initial Player Choice
+
+print(f"Compare A: {choice_a["name"]}, a {choice_a["description"]} from {choice_a["country"]}.")
+print(art.vs)
+print(f"Against B: {choice_b["name"]}, a {choice_b["description"]} from {choice_b["country"]}.")
+player_choice = input("Who has more followers, A or B?\n").lower()
+if player_choice == "a":
+    player_choice = choice_a
+    not_chosen = choice_b
+else:
+    player_choice = choice_b
+    not_chosen = choice_a
+
+if player_choice["follower_count"] > not_chosen["follower_count"]:
+    print(f"Correct, {player_choice["name"]} from {player_choice["country"]} has {player_choice["follower_count"]} million followers, {not_chosen["name"]} from {not_chosen["country"]} has {not_chosen["follower_count"]} million followers")
+    correct_answer = True
+else:
+    print(f"Wrong, {not_chosen["name"]} from {not_chosen["country"]} has {not_chosen["follower_count"]} million followers, {player_choice["name"]} from {player_choice["country"]} has {player_choice["follower_count"]} million followers")
+    correct_answer = False
+    print(f"Your final score = {score}")
+    exit()
+
+# Carries over the second choice from the previous question to the next question as the first choice
+new_first_item = choice_b
+
+#While the player is guessing correctly, this loop will run
+while correct_answer == True:
+    score += 1
+    print(f"Your score is {score}")
+    #Randomly picks a new person for the second choice
+    new_second_item = pick_someone()
+
+    print(f"Compare A: {new_first_item["name"]}, a {new_first_item["description"]} from {new_first_item["country"]}.")
     print(art.vs)
-    compare_b(dict_increment+1)
+    print(f"Against B: {new_second_item["name"]}, a {new_second_item["description"]} from {new_second_item["country"]}.")
+    player_choice = input("Who has more followers, A or B?\n").lower()
 
-    user_choice = input("Who has more followers? Type A or B:\n").lower()
+    # If the player choose "a", the dictionary from their selection is added as their choice.
+    if player_choice == "a":
+        #new_first_item and new_second_item are dictionaries
+        player_choice = new_first_item
+        not_chosen = new_second_item
+    else:
+        player_choice = new_second_item
+        not_chosen = new_first_item
 
-    correct_guess = check_answer(dict_increment, dict_increment+1, user_choice)
-    if correct_guess == True:
-        score += 1
-    #Increment the dictionaries to cycle through by 1
-    dict_increment += 1
-
+    if player_choice["follower_count"] > not_chosen["follower_count"]:
+        print(f"Correct, {player_choice["name"]} from {player_choice["country"]} has {player_choice["follower_count"]} million followers, {not_chosen["name"]} from {not_chosen["country"]} has {not_chosen["follower_count"]} million followers")
+        correct_answer = True
+    else:
+        print(f"Wrong, {not_chosen["name"]} from {not_chosen["country"]} has {not_chosen["follower_count"]} million followers, {player_choice["name"]} from {player_choice["country"]} has {player_choice["follower_count"]} million followers")
+        correct_answer = False
+        print(f"Your final score = {score}")
+        exit()
+    #Moves the second choice to the first choice for the next loop
+    new_first_item = new_second_item
