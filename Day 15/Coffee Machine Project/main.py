@@ -1,3 +1,4 @@
+from multiprocessing.dummy import current_process
 from tabnanny import check
 
 MENU = {
@@ -36,10 +37,10 @@ resources = {
 available_commands = ["cappucino", "latte", ]
 
 def report():
-    print(f"Water = {resources["water"]}\n"
-          f"Milk = {resources["milk"]}\n"
-          f"Coffee = {resources["coffee"]}\n"
-          f"Money = ${resources["money"]:.2f}\n")
+    print(f"Water = {resources["water"]}\n")
+    print(f"Milk = {resources["milk"]}\n")
+    print(f"Coffee = {resources["coffee"]}\n")
+    print(f"Money = ${resources["money"]:.2f}\n")
 
 def user_selection():
     valid_selection = False
@@ -48,51 +49,55 @@ def user_selection():
         for i in MENU:
             if user_selection == i or user_selection == "off":
                 valid_selection = True
-        if valid_selection == False:
+        if valid_selection == False and user_selection != "report":
             print("Try again")
         if user_selection == "off":
             exit()
+        if user_selection == "report":
+            report()
     return user_selection
 
 def check_against_resources(drink_selected, current_resources):
-    water_check = current_resources["water"] - MENU[drink_selected]["ingredients"]["water"]
-    milk_check = current_resources["milk"] - MENU[drink_selected]["ingredients"]["milk"]
-    coffee_check = current_resources["coffee"] - MENU[drink_selected]["ingredients"]["coffee"]
+    current = current_resources
+    required = MENU[drink_selected]["ingredients"]
+    #Check if any resource is 0 or below
+    for i in required:
+        if current[i] - required[i] <= 0:
+            print(f"Sorry there is not enough {i}")
+            exit()
+    #Update the values of current resources
+    for i in required:
+        current[i] -= required[i]
 
-    #Add each check into a list so we can loop through and check if >0
+def coin_input(drink_selected, current_resources):
+    change_due = 0.00
+    current = current_resources
+    cost = MENU[drink_selected]["cost"]
+    print("DEBUG")
+    quarters = float(input("How many quarters?")) * 25
+    dimes = float(input("How many dimes?")) * 10
+    nickels = float(input("How many nickels?")) * 5
+    pennies = float(input("How many pennies"))
 
-    check_resource_list = [water_check,milk_check,coffee_check]
-    for i in check_resource_list:
-        if i <= 0:
-            print("Not enough resources")
-            return False
-        else:
-            return True
+    money_paid = (quarters+dimes+nickels+pennies)/100
 
-def coin_input():
-    quarters = input("How many quarters?").lower()
-    dimes = input("How many dimes?").lower()
-    nickels = input("How many nickels?").lower()
-    pennies = input("How many pennies").lower()
-#TODO 2 - Check selection against current machine resources - Done
-# Not enough = "Sorry not enough {resource} and exit
-# Enough = "Please insert coins"
+    if money_paid >= cost:
+        change_due = float(money_paid - cost)
+        current["money"] += (money_paid - change_due)
 
-# User inputs their drink choice. Choice is stored as variable "drink_choice""
+        return change_due
+    else:
+        print("Sorry that's not enough money. Money refunded.")
+        exit()
+
 drink_choice = user_selection()
-
-# Resources needed to make drink checked against current resource levels.
 check_against_resources(drink_choice, resources)
 
+change = coin_input(drink_choice, resources)
+print(f" Here is ${change:.2f} in change. Here is your {drink_choice} \U0001f600. Enjoy!")
 
+exit()
 
-# How to find the resource value for the desired drink
-# print(MENU[drink_choice]["ingredients"]["water"])
-
-#TODO 3 - Allow input of how many quarters, dimes, nickles and pennies are inserted
-# Store the current coins deposited in the transaction and check against price of selected drink.
-# If enough, print success message, update resources and return to choice
-# If not enough, print refund message and return to choice
 
 
 
