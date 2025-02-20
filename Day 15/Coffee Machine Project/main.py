@@ -1,6 +1,3 @@
-from multiprocessing.dummy import current_process
-from tabnanny import check
-
 MENU = {
     "espresso": {
         "ingredients": {
@@ -73,7 +70,6 @@ def coin_input(drink_selected, current_resources):
     change_due = 0.00
     current = current_resources
     cost = MENU[drink_selected]["cost"]
-    print("DEBUG")
     quarters = float(input("How many quarters?")) * 25
     dimes = float(input("How many dimes?")) * 10
     nickels = float(input("How many nickels?")) * 5
@@ -90,13 +86,15 @@ def coin_input(drink_selected, current_resources):
         print("Sorry that's not enough money. Money refunded.")
         exit()
 
-drink_choice = user_selection()
-check_against_resources(drink_choice, resources)
+keep_running = True
 
-change = coin_input(drink_choice, resources)
-print(f" Here is ${change:.2f} in change. Here is your {drink_choice} \U0001f600. Enjoy!")
+while keep_running == True:
 
-exit()
+    drink_choice = user_selection()
+    check_against_resources(drink_choice, resources)
+
+    change = coin_input(drink_choice, resources)
+    print(f" Here is ${change:.2f} in change. Here is your {drink_choice} \U0001f600. Enjoy!")
 
 
 
